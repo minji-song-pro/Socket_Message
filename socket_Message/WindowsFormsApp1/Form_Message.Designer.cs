@@ -1,6 +1,6 @@
-﻿namespace WindowsFormsApp1
+﻿namespace Socket_Message
 {
-	partial class Form1
+	partial class Form_Message
 	{
 		/// <summary>
 		/// 필수 디자이너 변수입니다.
@@ -28,28 +28,28 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form_Message));
 			this.statusStrip_bar = new System.Windows.Forms.StatusStrip();
-			this.toolStrip_bar = new System.Windows.Forms.ToolStrip();
 			this.toolStripStatus_lb_time = new System.Windows.Forms.ToolStripStatusLabel();
-			this.toolStripBtn_connect = new System.Windows.Forms.ToolStripButton();
-			this.toolStripBtn_disconnect = new System.Windows.Forms.ToolStripButton();
+			this.toolStrip_bar = new System.Windows.Forms.ToolStrip();
 			this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
 			this.설정ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.닫기ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripBtn_connect = new System.Windows.Forms.ToolStripButton();
+			this.toolStripBtn_disconnect = new System.Windows.Forms.ToolStripButton();
 			this.panel_message = new System.Windows.Forms.Panel();
-			this.tb_message = new System.Windows.Forms.TextBox();
 			this.btn_send = new System.Windows.Forms.Button();
+			this.tb_message = new System.Windows.Forms.TextBox();
 			this.panel_setup = new System.Windows.Forms.Panel();
-			this.lb_ip = new System.Windows.Forms.Label();
-			this.lb_id = new System.Windows.Forms.Label();
-			this.lb_port = new System.Windows.Forms.Label();
-			this.tb_id = new System.Windows.Forms.TextBox();
+			this.btn_close = new System.Windows.Forms.Button();
+			this.btn_setup = new System.Windows.Forms.Button();
+			this.cb_server = new System.Windows.Forms.CheckBox();
 			this.tb_ip = new System.Windows.Forms.TextBox();
 			this.tb_port = new System.Windows.Forms.TextBox();
-			this.cb_server = new System.Windows.Forms.CheckBox();
-			this.btn_setup = new System.Windows.Forms.Button();
-			this.btn_close = new System.Windows.Forms.Button();
+			this.tb_id = new System.Windows.Forms.TextBox();
+			this.lb_port = new System.Windows.Forms.Label();
+			this.lb_id = new System.Windows.Forms.Label();
+			this.lb_ip = new System.Windows.Forms.Label();
 			this.richtb_message = new System.Windows.Forms.RichTextBox();
 			this.statusStrip_bar.SuspendLayout();
 			this.toolStrip_bar.SuspendLayout();
@@ -67,6 +67,12 @@
 			this.statusStrip_bar.TabIndex = 0;
 			this.statusStrip_bar.Text = "statusStrip1";
 			// 
+			// toolStripStatus_lb_time
+			// 
+			this.toolStripStatus_lb_time.Name = "toolStripStatus_lb_time";
+			this.toolStripStatus_lb_time.Size = new System.Drawing.Size(99, 17);
+			this.toolStripStatus_lb_time.Text = "메시지 받은 시간";
+			// 
 			// toolStrip_bar
 			// 
 			this.toolStrip_bar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -78,33 +84,6 @@
 			this.toolStrip_bar.Size = new System.Drawing.Size(263, 25);
 			this.toolStrip_bar.TabIndex = 1;
 			this.toolStrip_bar.Text = "toolStrip1";
-			// 
-			// toolStripStatus_lb_time
-			// 
-			this.toolStripStatus_lb_time.Name = "toolStripStatus_lb_time";
-			this.toolStripStatus_lb_time.Size = new System.Drawing.Size(99, 17);
-			this.toolStripStatus_lb_time.Text = "메시지 받은 시간";
-			// 
-			// toolStripBtn_connect
-			// 
-			this.toolStripBtn_connect.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripBtn_connect.Enabled = false;
-			this.toolStripBtn_connect.Image = ((System.Drawing.Image)(resources.GetObject("toolStripBtn_connect.Image")));
-			this.toolStripBtn_connect.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripBtn_connect.Name = "toolStripBtn_connect";
-			this.toolStripBtn_connect.Size = new System.Drawing.Size(23, 22);
-			this.toolStripBtn_connect.Text = "toolStripButton2";
-			this.toolStripBtn_connect.Click += new System.EventHandler(this.toolStripBtn_connect_Click);
-			// 
-			// toolStripBtn_disconnect
-			// 
-			this.toolStripBtn_disconnect.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripBtn_disconnect.Enabled = false;
-			this.toolStripBtn_disconnect.Image = ((System.Drawing.Image)(resources.GetObject("toolStripBtn_disconnect.Image")));
-			this.toolStripBtn_disconnect.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.toolStripBtn_disconnect.Name = "toolStripBtn_disconnect";
-			this.toolStripBtn_disconnect.Size = new System.Drawing.Size(23, 22);
-			this.toolStripBtn_disconnect.Text = "toolStripButton3";
 			// 
 			// toolStripDropDownButton1
 			// 
@@ -130,6 +109,28 @@
 			this.닫기ToolStripMenuItem.Name = "닫기ToolStripMenuItem";
 			this.닫기ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.닫기ToolStripMenuItem.Text = "닫기";
+			this.닫기ToolStripMenuItem.Click += new System.EventHandler(this.닫기ToolStripMenuItem_Click);
+			// 
+			// toolStripBtn_connect
+			// 
+			this.toolStripBtn_connect.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripBtn_connect.Enabled = false;
+			this.toolStripBtn_connect.Image = ((System.Drawing.Image)(resources.GetObject("toolStripBtn_connect.Image")));
+			this.toolStripBtn_connect.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripBtn_connect.Name = "toolStripBtn_connect";
+			this.toolStripBtn_connect.Size = new System.Drawing.Size(23, 22);
+			this.toolStripBtn_connect.Text = "toolStripButton2";
+			this.toolStripBtn_connect.Click += new System.EventHandler(this.toolStripBtn_connect_Click);
+			// 
+			// toolStripBtn_disconnect
+			// 
+			this.toolStripBtn_disconnect.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripBtn_disconnect.Enabled = false;
+			this.toolStripBtn_disconnect.Image = ((System.Drawing.Image)(resources.GetObject("toolStripBtn_disconnect.Image")));
+			this.toolStripBtn_disconnect.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripBtn_disconnect.Name = "toolStripBtn_disconnect";
+			this.toolStripBtn_disconnect.Size = new System.Drawing.Size(23, 22);
+			this.toolStripBtn_disconnect.Text = "toolStripButton3";
 			// 
 			// panel_message
 			// 
@@ -140,14 +141,6 @@
 			this.panel_message.Size = new System.Drawing.Size(259, 61);
 			this.panel_message.TabIndex = 3;
 			// 
-			// tb_message
-			// 
-			this.tb_message.Location = new System.Drawing.Point(10, 9);
-			this.tb_message.Multiline = true;
-			this.tb_message.Name = "tb_message";
-			this.tb_message.Size = new System.Drawing.Size(177, 43);
-			this.tb_message.TabIndex = 0;
-			// 
 			// btn_send
 			// 
 			this.btn_send.Location = new System.Drawing.Point(193, 9);
@@ -156,6 +149,14 @@
 			this.btn_send.TabIndex = 1;
 			this.btn_send.Text = "보내기";
 			this.btn_send.UseVisualStyleBackColor = true;
+			// 
+			// tb_message
+			// 
+			this.tb_message.Location = new System.Drawing.Point(10, 9);
+			this.tb_message.Multiline = true;
+			this.tb_message.Name = "tb_message";
+			this.tb_message.Size = new System.Drawing.Size(177, 43);
+			this.tb_message.TabIndex = 0;
 			// 
 			// panel_setup
 			// 
@@ -174,39 +175,36 @@
 			this.panel_setup.TabIndex = 4;
 			this.panel_setup.Visible = false;
 			// 
-			// lb_ip
+			// btn_close
 			// 
-			this.lb_ip.AutoSize = true;
-			this.lb_ip.Location = new System.Drawing.Point(25, 19);
-			this.lb_ip.Name = "lb_ip";
-			this.lb_ip.Size = new System.Drawing.Size(24, 12);
-			this.lb_ip.TabIndex = 0;
-			this.lb_ip.Text = "IP :";
+			this.btn_close.Location = new System.Drawing.Point(108, 105);
+			this.btn_close.Name = "btn_close";
+			this.btn_close.Size = new System.Drawing.Size(66, 23);
+			this.btn_close.TabIndex = 3;
+			this.btn_close.Text = "닫기";
+			this.btn_close.UseVisualStyleBackColor = true;
+			this.btn_close.Click += new System.EventHandler(this.btn_close_Click);
 			// 
-			// lb_id
+			// btn_setup
 			// 
-			this.lb_id.AutoSize = true;
-			this.lb_id.Location = new System.Drawing.Point(25, 44);
-			this.lb_id.Name = "lb_id";
-			this.lb_id.Size = new System.Drawing.Size(24, 12);
-			this.lb_id.TabIndex = 0;
-			this.lb_id.Text = "ID :";
+			this.btn_setup.Location = new System.Drawing.Point(27, 120);
+			this.btn_setup.Name = "btn_setup";
+			this.btn_setup.Size = new System.Drawing.Size(64, 23);
+			this.btn_setup.TabIndex = 3;
+			this.btn_setup.Text = "설정";
+			this.btn_setup.UseVisualStyleBackColor = true;
+			this.btn_setup.Click += new System.EventHandler(this.btn_setup_Click);
 			// 
-			// lb_port
+			// cb_server
 			// 
-			this.lb_port.AutoSize = true;
-			this.lb_port.Location = new System.Drawing.Point(25, 69);
-			this.lb_port.Name = "lb_port";
-			this.lb_port.Size = new System.Drawing.Size(46, 12);
-			this.lb_port.TabIndex = 0;
-			this.lb_port.Text = "PORT :";
-			// 
-			// tb_id
-			// 
-			this.tb_id.Location = new System.Drawing.Point(74, 40);
-			this.tb_id.Name = "tb_id";
-			this.tb_id.Size = new System.Drawing.Size(100, 21);
-			this.tb_id.TabIndex = 1;
+			this.cb_server.AutoSize = true;
+			this.cb_server.Location = new System.Drawing.Point(27, 92);
+			this.cb_server.Name = "cb_server";
+			this.cb_server.Size = new System.Drawing.Size(72, 16);
+			this.cb_server.TabIndex = 2;
+			this.cb_server.Text = "서버실행";
+			this.cb_server.UseVisualStyleBackColor = true;
+			this.cb_server.CheckedChanged += new System.EventHandler(this.cb_server_CheckedChanged);
 			// 
 			// tb_ip
 			// 
@@ -223,36 +221,39 @@
 			this.tb_port.Size = new System.Drawing.Size(100, 21);
 			this.tb_port.TabIndex = 1;
 			// 
-			// cb_server
+			// tb_id
 			// 
-			this.cb_server.AutoSize = true;
-			this.cb_server.Location = new System.Drawing.Point(27, 92);
-			this.cb_server.Name = "cb_server";
-			this.cb_server.Size = new System.Drawing.Size(72, 16);
-			this.cb_server.TabIndex = 2;
-			this.cb_server.Text = "서버실행";
-			this.cb_server.UseVisualStyleBackColor = true;
-			this.cb_server.CheckedChanged += new System.EventHandler(this.cb_server_CheckedChanged);
+			this.tb_id.Location = new System.Drawing.Point(74, 40);
+			this.tb_id.Name = "tb_id";
+			this.tb_id.Size = new System.Drawing.Size(100, 21);
+			this.tb_id.TabIndex = 1;
 			// 
-			// btn_setup
+			// lb_port
 			// 
-			this.btn_setup.Location = new System.Drawing.Point(27, 120);
-			this.btn_setup.Name = "btn_setup";
-			this.btn_setup.Size = new System.Drawing.Size(64, 23);
-			this.btn_setup.TabIndex = 3;
-			this.btn_setup.Text = "설정";
-			this.btn_setup.UseVisualStyleBackColor = true;
-			this.btn_setup.Click += new System.EventHandler(this.btn_setup_Click);
+			this.lb_port.AutoSize = true;
+			this.lb_port.Location = new System.Drawing.Point(25, 69);
+			this.lb_port.Name = "lb_port";
+			this.lb_port.Size = new System.Drawing.Size(46, 12);
+			this.lb_port.TabIndex = 0;
+			this.lb_port.Text = "PORT :";
 			// 
-			// btn_close
+			// lb_id
 			// 
-			this.btn_close.Location = new System.Drawing.Point(108, 120);
-			this.btn_close.Name = "btn_close";
-			this.btn_close.Size = new System.Drawing.Size(66, 23);
-			this.btn_close.TabIndex = 3;
-			this.btn_close.Text = "닫기";
-			this.btn_close.UseVisualStyleBackColor = true;
-			this.btn_close.Click += new System.EventHandler(this.btn_close_Click);
+			this.lb_id.AutoSize = true;
+			this.lb_id.Location = new System.Drawing.Point(25, 44);
+			this.lb_id.Name = "lb_id";
+			this.lb_id.Size = new System.Drawing.Size(24, 12);
+			this.lb_id.TabIndex = 0;
+			this.lb_id.Text = "ID :";
+			// 
+			// lb_ip
+			// 
+			this.lb_ip.AutoSize = true;
+			this.lb_ip.Location = new System.Drawing.Point(25, 19);
+			this.lb_ip.Name = "lb_ip";
+			this.lb_ip.Size = new System.Drawing.Size(24, 12);
+			this.lb_ip.TabIndex = 0;
+			this.lb_ip.Text = "IP :";
 			// 
 			// richtb_message
 			// 
@@ -262,7 +263,7 @@
 			this.richtb_message.TabIndex = 5;
 			this.richtb_message.Text = "";
 			// 
-			// Form1
+			// Form_Message
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -272,8 +273,9 @@
 			this.Controls.Add(this.panel_message);
 			this.Controls.Add(this.toolStrip_bar);
 			this.Controls.Add(this.statusStrip_bar);
-			this.Name = "Form1";
+			this.Name = "Form_Message";
 			this.Text = "Form1";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form_Message_FormClosing);
 			this.Load += new System.EventHandler(this.Form1_Load);
 			this.statusStrip_bar.ResumeLayout(false);
 			this.statusStrip_bar.PerformLayout();

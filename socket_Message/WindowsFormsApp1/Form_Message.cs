@@ -13,12 +13,13 @@ using System.Net; // IPAddress
 using System.Net.Sockets; //TcpListener 클래스 사용
 using System.Threading; //스레드 클래스 사용
 using System.IO; //파일 클래스 사용. stream
+using System.Runtime.InteropServices; //작업표시줄 폼 깜빡임 구현
 
-namespace WindowsFormsApp1
+namespace Socket_Message
 {
-	public partial class Form1 : Form
+	public partial class Form_Message : Form
 	{
-		public Form1()
+		public Form_Message()
 		{
 			InitializeComponent();
 		}
@@ -27,24 +28,20 @@ namespace WindowsFormsApp1
 		private int myPort;
 		private delegate void AddTextDelegate(string strText);
 		private AddTextDelegate AddText = null;
-		private Boolean sStart = false; //서버 시작
-		private Boolean cStart = false;//클라이언트 시작 
 		private TcpListener Server; //TCP 네트워크 클라이언트에서 연결 수신
-		private TcpClient Client; //TCP 네트워크 서비스에 대한 클라이언트 연결 제공
+		private TcpClient serClient, Client; //TCP 네트워크 서비스에 대한 클라이언트 연결 제공
 		private Thread threadServer, threadReader;
 		private NetworkStream myStream; //네트워크 스트림
 		private StreamReader myRead; //스트림 읽기
 		private StreamWriter myWrite; //스트림 쓰기
+		private Boolean sStart = false; //서버 시작
+		private Boolean cStart = false;//클라이언트 시작 
+		private Boolean textChange = false;
+		private Boolean textSend = false;
 
-
-		private void 설정ToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			this.설정ToolStripMenuItem.Enabled = false;
-			this.panel_setup.Visible = true;
-			this.tb_id.Focus();
-			this.tb_id.Text = (string)regkey.GetValue("Message_id");
-			this.tb_port.Text = "62000";
-		}
+		//작업표시줄 폼 깜빡임
+		[DllImport("User32.dll")]
+		private static extern bool FlashWindow(IntPtr hwnd, bool bInvert);
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
@@ -60,30 +57,35 @@ namespace WindowsFormsApp1
 					this.myID = (string)regkey.GetValue("Message_id");
 					this.myPort = 62000;
 				}
-				catch 
+				catch
 				{
 					this.myID = this.tb_id.Text;
 					this.myPort = 62000;
-				}			
+				}
 			}
 			this.tb_port.Text = "62000";
 		}
-
-		private void cb_server_CheckedChanged(object sender, EventArgs e)
+		private void Form_Message_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			if (this.cb_server.Checked)
-			{
-				this.tb_ip.Enabled = false; //서버 모드 전환			
-			}
-			else 
-			{
-				this.tb_ip.Enabled = true; //클라이언트 모드 전환
-			}
+			try { ServerStop(); }
+			catch { Disconnection(); }
 		}
 
+		private void 설정ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			this.설정ToolStripMenuItem.Enabled = false;
+			this.panel_setup.Visible = true;
+			this.tb_id.Focus();
+			this.tb_id.Text = (string)regkey.GetValue("Message_id");
+			this.tb_port.Text = "62000";
+		}
+		private void 닫기ToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			this.Close();
+		}
 		private void btn_setup_Click(object sender, EventArgs e)
 		{
-			if(this.cb_server.Checked==true) //서버 모드 전환
+			if (this.cb_server.Checked == true) //서버 모드 전환
 			{
 				ControlCheck();
 			}
@@ -99,37 +101,17 @@ namespace WindowsFormsApp1
 				}
 			}
 		}
-
-		private void ControlCheck()
+		private void cb_server_CheckedChanged(object sender, EventArgs e)
 		{
-			if (this.tb_id.Text == "")
+			if (this.cb_server.Checked)
 			{
-				this.tb_id.Focus();
+				this.tb_ip.Enabled = false; //서버 모드 전환			
 			}
-			else if (this.tb_port.Text == "")
+			else 
 			{
-				this.tb_port.Focus();
+				this.tb_ip.Enabled = true; //클라이언트 모드 전환
 			}
-			else
-			{
-				try 
-				{
-					var name = this.tb_id.Text;
-					var port = this.tb_port.Text;
-					regkey.SetValue("Message_id", name);
-					regkey.SetValue("Message_port", port);
-					this.panel_setup.Visible = false;
-					this.설정ToolStripMenuItem.Enabled = true;
-					this.toolStripBtn_connect.Enabled = true;
-				}
-				catch 
-				{
-					MessageBox.Show("설정이 저장되지 않았습니다", "에러", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				}
-			
-			}
-
-		}		
+		}
 		private void btn_close_Click(object sender, EventArgs e)
 		{
 			this.설정ToolStripMenuItem.Enabled = true; //설정 메뉴 활성화
@@ -149,7 +131,7 @@ namespace WindowsFormsApp1
 				catch
 				{
 					this.myID = this.tb_id.Text;
-					this.myPort = int.Parse(this.tb_port.Text);
+					this.myPort = Convert.ToInt32(this.tb_port.Text);
 				}
 
 				if (!(this.sStart))
@@ -183,13 +165,54 @@ namespace WindowsFormsApp1
 			}
 			else
 			{
-				if(!(this.cStart))
+				if (!(this.cStart))
 				{
 					this.myID = (string)regkey.GetValue("Message_id");
-					//this.myPort= int.Parse(regkey.GetValue("Message_port"));
+					this.myPort = Convert.ToInt32(regkey.GetValue("Message_port"));
+					ClientConnection();
+				}
+				else
+				{
+					this.tb_message.Enabled = false;
+					this.btn_send.Enabled = false;
+					Disconnection();
 				}
 			}
 		}
+		 
+
+		private void ControlCheck()
+		{
+			if (this.tb_id.Text == "")
+			{
+				this.tb_id.Focus();
+			}
+			else if (this.tb_port.Text == "")
+			{
+				this.tb_port.Focus();
+			}
+			else
+			{
+				try 
+				{
+					var name = this.tb_id.Text;
+					var port = this.tb_port.Text;
+					regkey.SetValue("Message_id", name);
+					regkey.SetValue("Message_port", port);
+					this.panel_setup.Visible = false;
+					this.설정ToolStripMenuItem.Enabled = true;
+					this.toolStripBtn_connect.Enabled = true;
+				}
+				catch 
+				{
+					MessageBox.Show("설정이 저장되지 않았습니다", "에러", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+			
+			}
+
+		}		
+		
+		
 		private void MessageView(string strText)
 		{
 			this.richtb_message.AppendText(strText + "\r\n");
@@ -217,6 +240,9 @@ namespace WindowsFormsApp1
 				catch { }
 			}			
 		}
+
+		
+
 		private void Receive()
 		{
 			try
