@@ -7,3 +7,12 @@ C:\Users\kccistc\OneDrive\SongMinJi\project\socket_Message\WindowsFormsApp1\obj\
 C:\Users\kccistc\OneDrive\SongMinJi\project\socket_Message\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csproj.GenerateResource.cache
 C:\Users\kccistc\OneDrive\SongMinJi\project\socket_Message\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.exe
 C:\Users\kccistc\OneDrive\SongMinJi\project\socket_Message\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.pdb
+C:\Users\kccistc\OneDrive\SongMinJi\project_git\Socket_Message\socket_Message\WindowsFormsApp1\bin\Debug\WindowsFormsApp1.exe.config
+C:\Users\kccistc\OneDrive\SongMinJi\project_git\Socket_Message\socket_Message\WindowsFormsApp1\bin\Debug\WindowsFormsApp1.exe
+C:\Users\kccistc\OneDrive\SongMinJi\project_git\Socket_Message\socket_Message\WindowsFormsApp1\bin\Debug\WindowsFormsApp1.pdb
+C:\Users\kccistc\OneDrive\SongMinJi\project_git\Socket_Message\socket_Message\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csprojAssemblyReference.cache
+C:\Users\kccistc\OneDrive\SongMinJi\project_git\Socket_Message\socket_Message\WindowsFormsApp1\obj\Debug\Socket_Message.Form_Message.resources
+C:\Users\kccistc\OneDrive\SongMinJi\project_git\Socket_Message\socket_Message\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.Properties.Resources.resources
+C:\Users\kccistc\OneDrive\SongMinJi\project_git\Socket_Message\socket_Message\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csproj.GenerateResource.cache
+C:\Users\kccistc\OneDrive\SongMinJi\project_git\Socket_Message\socket_Message\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.exe
+C:\Users\kccistc\OneDrive\SongMinJi\project_git\Socket_Message\socket_Message\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.pdb

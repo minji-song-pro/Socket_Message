@@ -100,14 +100,14 @@
 			// 설정ToolStripMenuItem
 			// 
 			this.설정ToolStripMenuItem.Name = "설정ToolStripMenuItem";
-			this.설정ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.설정ToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
 			this.설정ToolStripMenuItem.Text = "설정";
 			this.설정ToolStripMenuItem.Click += new System.EventHandler(this.설정ToolStripMenuItem_Click);
 			// 
 			// 닫기ToolStripMenuItem
 			// 
 			this.닫기ToolStripMenuItem.Name = "닫기ToolStripMenuItem";
-			this.닫기ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.닫기ToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
 			this.닫기ToolStripMenuItem.Text = "닫기";
 			this.닫기ToolStripMenuItem.Click += new System.EventHandler(this.닫기ToolStripMenuItem_Click);
 			// 
@@ -149,6 +149,7 @@
 			this.btn_send.TabIndex = 1;
 			this.btn_send.Text = "보내기";
 			this.btn_send.UseVisualStyleBackColor = true;
+			this.btn_send.Click += new System.EventHandler(this.btn_send_Click);
 			// 
 			// tb_message
 			// 
@@ -177,7 +178,7 @@
 			// 
 			// btn_close
 			// 
-			this.btn_close.Location = new System.Drawing.Point(108, 105);
+			this.btn_close.Location = new System.Drawing.Point(108, 120);
 			this.btn_close.Name = "btn_close";
 			this.btn_close.Size = new System.Drawing.Size(66, 23);
 			this.btn_close.TabIndex = 3;
@@ -274,7 +275,7 @@
 			this.Controls.Add(this.toolStrip_bar);
 			this.Controls.Add(this.statusStrip_bar);
 			this.Name = "Form_Message";
-			this.Text = "Form1";
+			this.Text = "Message";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form_Message_FormClosing);
 			this.Load += new System.EventHandler(this.Form1_Load);
 			this.statusStrip_bar.ResumeLayout(false);

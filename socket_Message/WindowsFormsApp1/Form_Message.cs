@@ -42,7 +42,6 @@ namespace Socket_Message
 		//작업표시줄 폼 깜빡임
 		[DllImport("User32.dll")]
 		private static extern bool FlashWindow(IntPtr hwnd, bool bInvert);
-
 		private void Form1_Load(object sender, EventArgs e)
 		{
 			if ((string)regkey.GetValue("Message_id") == "")
@@ -70,7 +69,6 @@ namespace Socket_Message
 			try { ServerStop(); }
 			catch { Disconnection(); }
 		}
-
 		private void 설정ToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			this.설정ToolStripMenuItem.Enabled = false;
@@ -100,18 +98,7 @@ namespace Socket_Message
 					ControlCheck();
 				}
 			}
-		}
-		private void cb_server_CheckedChanged(object sender, EventArgs e)
-		{
-			if (this.cb_server.Checked)
-			{
-				this.tb_ip.Enabled = false; //서버 모드 전환			
-			}
-			else 
-			{
-				this.tb_ip.Enabled = true; //클라이언트 모드 전환
-			}
-		}
+		}		
 		private void btn_close_Click(object sender, EventArgs e)
 		{
 			this.설정ToolStripMenuItem.Enabled = true; //설정 메뉴 활성화
@@ -179,8 +166,56 @@ namespace Socket_Message
 				}
 			}
 		}
-		 
+		private void toolStripBtn_disconnect_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				if (this.cb_server.Checked)
+				{
+					if (this.serClient.Connected)
+					{
+						var datetime = Convert.ToString(DateTime.Now);
+						myWrite.WriteLine(this.myID + "&" + "채팅프로그램이 종료되었습니다." + "&" + datetime);
+						myWrite.Flush();
+					}
+				}
+				else
+				{
+					if (this.Client.Connected)
+					{
+						var datetime = Convert.ToString(DateTime.Now);
+						myWrite.WriteLine(this.myID + "&" + "채팅프로그램이 종료되었습니다." + "&" + datetime);
+						myWrite.Flush();
+					}
+				}
+			}
+			catch { }
+			ServerStop();
+			this.설정ToolStripMenuItem.Enabled = true;
 
+		}
+		private void cb_server_CheckedChanged(object sender, EventArgs e)
+		{
+			if (this.cb_server.Checked)
+			{
+				this.tb_ip.Enabled = false; //서버 모드 전환			
+			}
+			else
+			{
+				this.tb_ip.Enabled = true; //클라이언트 모드 전환
+			}
+		}
+		private void btn_send_Click(object sender, EventArgs e)
+		{
+			if (this.tb_message.Text == "")
+			{
+				this.tb_message.Focus();
+			}
+			else
+			{
+				MsgSend();
+			}
+		}
 		private void ControlCheck()
 		{
 			if (this.tb_id.Text == "")
@@ -210,39 +245,130 @@ namespace Socket_Message
 			
 			}
 
-		}		
-		
-		
-		private void MessageView(string strText)
-		{
-			this.richtb_message.AppendText(strText + "\r\n");
-			this.richtb_message.Focus();
-			this.richtb_message.ScrollToCaret();
-			this.tb_message.Focus();					
 		}
 		private void ServerStart()
 		{
 			Invoke(AddText, "서버 실행 : 상대방 접속을 기다립니다...");
-			while(sStart)
+			while (sStart)
 			{
 				try
 				{
-					Client = Server.AcceptTcpClient(); //클라이언트 연결 요청 수락
+					serClient = Server.AcceptTcpClient(); //클라이언트 연결 요청 수락
 					Invoke(AddText, "상대방이 접속하였습니다.");
-					myStream = Client.GetStream();
+					myStream = serClient.GetStream();
 
 					myRead = new StreamReader(myStream);
 					myWrite = new StreamWriter(myStream);
 					this.cStart = true;
+					textSend = true;
+
 					threadReader = new Thread(Receive);
 					threadReader.Start();
 				}
 				catch { }
-			}			
+			}
 		}
+		private void ServerStop()
+		{
+			this.sStart = false;
+			this.tb_message.Enabled = false;
+			this.tb_message.Clear();
+			this.btn_send.Enabled = false;
+			this.toolStripBtn_connect.Enabled = true;
+			this.toolStripBtn_disconnect.Enabled = false;
+			this.cb_server.Enabled = true;
+			this.cStart = false;
 
-		
+			if (!(myRead == null))
+			{
+				myRead.Close(); //StreamReader 클래스 개체 리소스 해제
+			}
+			if (!(myWrite == null))
+			{
+				myWrite.Close(); //StreamWriter 클래스 개체 리소스 해제
+			}
+			if (!(myStream == null))
+			{
+				myStream.Close(); //NetworkStream 클래스 개체 리소스 해제
+			}
+			if (!(serClient == null))
+			{
+				serClient.Close(); //TcpClient 클래스 개체 리소스 해제
+			}
+			if (!(Server == null))
+			{
+				Server.Stop(); //TcpListen 클래스 개체 리소스 해제
+			}
+			if (!(threadReader == null))
+			{
+				threadReader.Abort(); //외부 스레드 종료
+			}
+			if (!(threadServer == null))
+			{
+				threadServer.Abort(); //외부 스레드 종료
+			}
+			if (!(AddText == null))
+			{
+				Invoke(AddText, "연결이 끊어졌습니다.");
+			}
+		}
+		private void ClientConnection()
+		{
+			try
+			{
+				Client = new TcpClient(this.tb_ip.Text, this.myPort);
+				Invoke(AddText, "서버에 접속했습니다.");
+				myStream = Client.GetStream();
 
+				myRead = new StreamReader(myStream);
+				myWrite = new StreamWriter(myStream);
+				this.cStart = true;
+				this.toolStripBtn_connect.Enabled = false;
+				this.toolStripBtn_disconnect.Enabled = true;
+				this.tb_message.Enabled = true;
+				this.btn_send.Enabled = true;
+				this.tb_message.Focus();
+
+				threadReader = new Thread(Receive);
+				threadReader.Start();
+			}
+			catch
+			{
+				this.cStart = false;
+				Invoke(AddText, "서버에 접속하지 못했습니다.");
+			}
+		}
+		private void Disconnection()
+		{
+			this.cStart = false;
+			try
+			{
+				if (!(myRead == null))
+				{
+					myRead.Close(); //StreamReader 클래스 개체 리소스 해제
+				}
+				if (!(myWrite == null))
+				{
+					myWrite.Close(); //StreamWriter 클래스 개체 리소스 해제
+				}
+				if (!(myStream == null))
+				{
+					myStream.Close(); //NetworkStream 클래스 개체 리소스 해제
+				}
+				if (!(Client == null))
+				{
+					Client.Close(); //TcpClient 클래스 개체 리소스 해제
+				}
+				if (!(threadReader == null))
+				{
+					threadReader.Abort(); //외부 스레드 종료
+				}
+			}
+			catch
+			{
+				return;
+			}
+		}
 		private void Receive()
 		{
 			try
@@ -271,51 +397,59 @@ namespace Socket_Message
 				}
 			}
 			catch { }
-		
-		}
-		private void ServerStop()
-		{
-			this.sStart = false;
-			this.tb_message.Enabled = false;
-			this.tb_message.Clear();
-			this.btn_send.Enabled = false;
-			this.toolStripBtn_connect.Enabled = true;
-			this.toolStripBtn_disconnect.Enabled = false;
-			this.cb_server.Enabled = true;
-			this.cStart = false;
 
-			if (!(myRead == null))
+		}
+		private void tb_message_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			if (e.KeyChar == (char)13) //enterkey
 			{
-				myRead.Close(); //StreamReader 클래스 개체 리소스 해제
+				e.Handled = true;
+				if (this.tb_message.Text == "")
+				{
+					this.tb_message.Focus();
+				}
+				else
+				{
+					MsgSend();
+				}
 			}
-			if (!(myWrite == null))
+		}
+		private void tb_message_TextChanged(object sender, EventArgs e)
+		{
+			if (textChange == false && textSend != false)
 			{
-				myWrite.Close(); //StreamWriter 클래스 개체 리소스 해제
+				textChange = true;
+				myWrite.WriteLine("S001" + "&" + "상대방 메세지 입력중....." + "&" + " ");
+				myWrite.Flush();
 			}
-			if (!(myStream == null))
+			else if (this.tb_message.Text == "" && textChange == true && textSend == true)
 			{
-				myStream.Close(); //NetworkStream 클래스 개체 리소스 해제
+				textChange = false;
 			}
-			if (!(Client == null))
+		}	
+		private void MsgSend()
+		{
+			try
 			{
-				Client.Close(); //TcpClient 클래스 개체 리소스 해제
+				var datetime = Convert.ToString(DateTime.Now);
+				myWrite.WriteLine(this.myID + "&" + this.tb_message.Text + "&" + datetime);
+				myWrite.Flush();
+				MessageView(this.myID + ": " + this.tb_message.Text);
+				this.tb_message.Clear();
 			}
-			if (!(Server == null))
+			catch
 			{
-				Server.Stop(); //TcpListen 클래스 개체 리소스 해제
+				Invoke(AddText, "데이터를 보내는 동안 오류가 발생하였습니다.");
+				this.tb_message.Clear();
 			}
-			if (!(threadReader == null))
-			{
-				threadReader.Abort(); //외부 스레드 종료
-			}
-			if (!(threadServer == null))
-			{
-				threadServer.Abort(); //외부 스레드 종료
-			}
-			if (!(AddText == null))
-			{
-				Invoke(AddText, "연결이 끊어졌습니다.");
-			}
+		}
+		private void MessageView(string strText)
+		{
+			this.richtb_message.AppendText(strText + "\r\n");
+			this.richtb_message.Focus();
+			this.richtb_message.ScrollToCaret();
+			this.tb_message.Focus();
+			FlashWindow(this.Handle, true);
 		}
 	}
 }
